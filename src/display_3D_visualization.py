@@ -32,12 +32,13 @@ from visual import *
 import math
 import wx
 
-from sensor_msgs.msg import Imu
+from sensor_msgs.msg import Imu, MagneticField
 from tf.transformations import euler_from_quaternion
 
 rospy.init_node("display_3D_visualization_node")
 imu_topic_name = rospy.get_param('~imu_topic','imu')
-imu_name = rospy.get_param('~imu_name','')
+mag_topic_name = rospy.get_param('~mag_topic','mag')
+imu_name = rospy.get_param('~imu_name','default_name')
 if not rospy.has_param('~imu_topic'):
     print "ERROR no topic name using: " + imu_topic_name
 if not rospy.has_param('~imu_name'):
@@ -69,7 +70,7 @@ scene.width=500
 scene.height=500
 
 # Second scene (Roll, Pitch, Yaw)
-scene2 = display(title=imu_name+' IMU Roll, Pitch, Yaw',x=550, y=0, width=500, height=500,center=(0,0,0), background=(0,0,0))
+scene2 = display(title=imu_name+' IMU Roll, Pitch, Yaw',x=550, y=0, width=600, height=600,center=(0,0,0), background=(0,0,0))
 scene2.range=(1,1,1)
 scene2.select()
 #Roll, Pitch, Yaw
@@ -99,8 +100,10 @@ yawLabel = label(pos=(0,-0.06,0),text="-",box=0,opacity=0,height=12)
 #acceleration labels
 label(pos=(0,0.9,0),text="Linear Acceleration x / y / z (m/s^2)",box=0,opacity=0)
 label(pos=(0,-0.8,0),text="Angular Velocity x / y / z (rad/s)",box=0,opacity=0)
+label(pos=(0,0.75,0),text="Magnetometer Vector x / y / z (Norm)",box=0,opacity=0)
 linAccLabel = label(pos=(0,0.82,0),text="-",box=0,opacity=0,height=12)
 angVelLabel = label(pos=(0,-0.88,0),text="-",box=0,opacity=0,height=12)
+mag_Label = label(pos=(0,0.68,0),text="-",box=0,opacity=0,height=12)
 
 # Main scene objects
 scene.select()
@@ -159,6 +162,7 @@ def processIMU_message(imuMsg):
     cil_pitch.axis=(0,-0.4*sin(pitch),-0.4*cos(pitch))
     #remove yaw_offset from yaw display
     arrow_course.axis=(-0.2*sin(yaw-yaw_offset),0.2*cos(yaw-yaw_offset),0)
+    #Normalize magnetometer vector
     
     #display in degrees / radians
     rollLabel.text = str(round(roll*rad2degrees, precision)) + " / " + str(round(roll,precision))
@@ -176,6 +180,19 @@ def processIMU_message(imuMsg):
             #align key pressed - align
             yaw_offset += -yaw
 
+def processMag_message(MagneticFieldMsg):
+	v = [None]*3
+	v[0] = MagneticFieldMsg.magnetic_field.x
+	v[1] = MagneticFieldMsg.magnetic_field.y
+	v[2] = MagneticFieldMsg.magnetic_field.z
+	magnitude = math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+	# normalize vector
+	for i in xrange(len(v)):
+		v[i] = v[i]/magnitude
+	mag = math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+	mag_Label.text = str(round(v[0], precision)) + " / " + str(round(v[1], precision)) + " / " + str(round(v[2], precision))
 
 sub = rospy.Subscriber(imu_topic_name, Imu, processIMU_message)
+sub_mag = rospy.Subscriber(mag_topic_name, MagneticField, processMag_message)
+
 rospy.spin()
