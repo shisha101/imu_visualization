@@ -34,6 +34,7 @@ import wx
 
 from sensor_msgs.msg import Imu, MagneticField
 from tf.transformations import euler_from_quaternion
+from cv2 import magnitude
 
 rospy.init_node("display_3D_visualization_node")
 imu_topic_name = rospy.get_param('~imu_topic','imu')
@@ -181,16 +182,16 @@ def processIMU_message(imuMsg):
             yaw_offset += -yaw
 
 def processMag_message(MagneticFieldMsg):
-	v = [None]*3
-	v[0] = MagneticFieldMsg.magnetic_field.x
-	v[1] = MagneticFieldMsg.magnetic_field.y
-	v[2] = MagneticFieldMsg.magnetic_field.z
-	magnitude = math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
-	# normalize vector
-	for i in xrange(len(v)):
-		v[i] = v[i]/magnitude
-	mag = math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
-	mag_Label.text = str(round(v[0], precision)) + " / " + str(round(v[1], precision)) + " / " + str(round(v[2], precision))
+    v = [None]*3
+    v[0] = MagneticFieldMsg.magnetic_field.x
+    v[1] = MagneticFieldMsg.magnetic_field.y
+    v[2] = MagneticFieldMsg.magnetic_field.z
+    magnitude = math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+    # normalize vector
+    for i in xrange(len(v)):
+        v[i] = v[i]/magnitude
+    mag = math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+    mag_Label.text = str(round(v[0], precision)) + " / " + str(round(v[1], precision)) + " / " + str(round(v[2], precision))
 
 sub = rospy.Subscriber(imu_topic_name, Imu, processIMU_message)
 sub_mag = rospy.Subscriber(mag_topic_name, MagneticField, processMag_message)
