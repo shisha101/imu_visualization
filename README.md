@@ -7,6 +7,7 @@ This package can be used to visualize the output of IMUs which are publishing th
 <node pkg="imu_visualization" type="display_3D_visualization.py" name="<NODE_NAME>" output="screen">
 	<param name="imu_topic" value="<TOPIC_TO_WHICH_IMU_IS_PUBLISHING>" />
 	<param name="imu_name" value="<NAME_OF_WINDOWs_(usually_the_imus_name)>" />
+    <param name="mag_topic" value="NAME_TOPIC_TO_WHICH_MAG_DATA_IS_TO_BE_PUBLISHED" />
 </node>
 ```
 
