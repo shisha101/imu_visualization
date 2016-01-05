@@ -1,0 +1,15 @@
+<launch>
+
+  <arg name="razor_config_file" default="$(find razor_imu_9dof)/config/my_razor.yaml"/>
+  <node pkg="razor_imu_9dof" type="imu_node.py" name="imu_node" output="screen">
+    <rosparam file="$(arg razor_config_file)" command="load"/>
+  </node>
+
+  <node pkg="imu_visualization" type="imu_sensor_calibration.py" name="imu_sensor_calibration" output="screen">
+	<param name="imu_data_topic_name" value="/sensor/imu/razor_imu/data" />
+	<param name="mag_data_topic_name" value="/sensor/imu/razor_imu/mag_raw" />
+    <param name="imu_name" value="Razor_imu" />
+    <param name="package_path" value="$(find imu_visualization)/configs/" /> -->
+	<!-- <param name="mag_data_vector_topic_name" value="/sensor/imu/xsens_mti/mag_calib" /> -->
+  </node>
+</launch>

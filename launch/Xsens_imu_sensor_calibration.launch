@@ -1,0 +1,27 @@
+<launch>
+  <node pkg="sensor_imu_mti_xsens" type="xsens_mti" name="xsens_mti" output="screen">
+
+    <param name="port_name" value="/dev/ttyUSB0" />
+    <param name="frequency" value="100" />
+    <param name="frame_name" value="imu_xsens_position" />
+
+    <!-- Choose if system is configurated. NoSystemConfig == 1: Preconfigured Device can be used -->
+    <param name="NoSystemConfig" value="0" />
+
+    <!-- If  NoSystemConfig == 0::    0 = Orientation, 1 = RawData (calibrated), 2 = MagneticField 3 = Orientation,Accel,Gyr,Magnetic-->
+    <param name="configuration" value="0" />
+
+    <!--From the MTI-300 manual, the drift for Yaw angle is 1deg, for Roll/Pitch 0.2deg. Time period unknown -->
+    <rosparam param="orientation_covariance">[100.0, 0.0, 0.0, 0.0, 100.0, 0.0, 0.0, 0.0, 0.01]</rosparam>
+  </node>
+  
+  <node pkg="imu_visualization" type="imu_sensor_calibration.py" name="imu_sensor_calibration" output="screen">
+	<param name="imu_data_topic_name" value="/sensor/imu/xsens_mti/data" />
+	<param name="mag_data_topic_name" value="/sensor/imu/xsens_mti/mag_calib" />
+    <param name="imu_name" value="Xsens_imu" />
+    <param name="package_path" value="$(find imu_visualization)/configs/" /> -->
+	<!-- <param name="mag_data_vector_topic_name" value="/sensor/imu/xsens_mti/mag_calib" /> -->
+  </node>
+
+
+</launch>
