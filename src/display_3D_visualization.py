@@ -186,12 +186,12 @@ def processMag_message(MagneticFieldMsg):
     v[0] = MagneticFieldMsg.magnetic_field.x
     v[1] = MagneticFieldMsg.magnetic_field.y
     v[2] = MagneticFieldMsg.magnetic_field.z
-    magnitude = math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
-    # normalize vector
-    for i in xrange(len(v)):
-        v[i] = v[i]/magnitude
-    mag = math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
-    mag_Label.text = str(round(v[0], precision)) + " / " + str(round(v[1], precision)) + " / " + str(round(v[2], precision))
+    magnitude = math.sqrt(sum(v[i]*v[i] for i in range(len(v))))    # normalize vector
+    if magnitude > 0.0:
+        for i in xrange(len(v)):
+            v[i] = v[i]/magnitude
+        mag = math.sqrt(sum(v[i]*v[i] for i in range(len(v))))
+        mag_Label.text = str(round(v[0], precision)) + " / " + str(round(v[1], precision)) + " / " + str(round(v[2], precision))
 
 sub = rospy.Subscriber(imu_topic_name, Imu, processIMU_message)
 sub_mag = rospy.Subscriber(mag_topic_name, MagneticField, processMag_message)

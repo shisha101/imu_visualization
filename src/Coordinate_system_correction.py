@@ -40,7 +40,7 @@ class imu_calibration():
         self.absolute_path = rospy.get_param('~package_path', "")
 
         # create subscribers
-        self.imu_subs= rospy.Subscriber(imu_data_tn, Imu, self.Imu_update)
+        self.imu_subs = rospy.Subscriber(imu_data_tn, Imu, self.Imu_update)
         self.mag_subs = rospy.Subscriber(mag_data_tn, MagneticField, self.mag_update)
         self.mag_vector_subs = rospy.Subscriber(mag_data_vector_tn, Vector3Stamped, self.mag_vector_update) # should not be needed
 
@@ -134,7 +134,7 @@ class imu_calibration():
         sensor_measured_list = sensor_current
         print ("measured values =: "+str(sensor_measured_list))
         print ("Threshold is =: "+str(sensor_threshold))
-        [mapping, sign] = self.check_and_return_sign(sensor_measured_list, sensor_threshold, axis) 
+        [mapping, sign] = self.check_and_return_sign(sensor_measured_list, sensor_threshold, axis)
         sensor_correction_mapping[axis] = mapping
         sensor_correction_direction[axis] = sign
         
