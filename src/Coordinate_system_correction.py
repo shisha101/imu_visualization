@@ -11,8 +11,8 @@ class imu_calibration():
         self.config_str_acc = "**** Configuring Accelerometeres ****"
         self.config_str_gyro = "**** Configuring Gyroscopes ****"
         self.config_str_mag = "**** Configuring Magnetometer ****"
-        self.config_str_acc_step = " (desierd positive) should be alligned with the direction of the gravity vector"
-        self.config_str_mag_step = " (desierd positive) should point towards the north"
+        self.config_str_acc_step = " (desierd negative) should be alligned with the direction of the gravity vector"
+        self.config_str_mag_step = " (desierd positive) should point towards the magnetic field field vector"
         self.config_str_gyro_step = " (desierd positive) should be rotated in a positive direction about the axis"
         ## thresholds
         self.acc_threshold = 11.0
